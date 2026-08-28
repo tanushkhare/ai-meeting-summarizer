@@ -1,11 +1,12 @@
-from fastapi import FastAPI
+﻿from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.app.routers import dashboard
+from backend.app.routers import summary_router
+import uvicorn
 
 app = FastAPI(
-    title="ETL Pipeline & Dashboard API",
-    version="1.0.0",
-    description="API for ingesting, transforming, and serving analytical metrics."
+    title="AI Meeting Summarizer & Executive Briefing API",
+    description="Multi-speaker transcript extraction, decision tree mapping, and automated action item parsing.",
+    version="1.0.0"
 )
 
 app.add_middleware(
@@ -16,8 +17,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(dashboard.router)
+app.include_router(summary_router.router)
 
-@app.get("/")
-def read_root():
-    return {"message": "ETL Pipeline & Dashboard Backend is running successfully!"}
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "service": "ai-meeting-summarizer"}
+
+if __name__ == "__main__":
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=8000, reload=True)
